@@ -8,6 +8,7 @@ private:
   gitlab_token: '...'
   obs_user: '...'
   obs_pass: '...'
+  thingiverse_app_token: '...'
   twitch_client_id: '...'
   twitch_client_secret: '...'
   weblate_api_key: '...'

@@ -24,6 +24,10 @@
       "description": "Configure the token to be used for the GitHub services.",
       "required": false
     },
+    "THINGIVERSE_APP_TOKEN": {
+      "description": "Configure the token to be used for the Thingiverse services.",
+      "required": false
+    },
     "TWITCH_CLIENT_ID": {
       "description": "Configure the client id to be used for the Twitch service.",
       "required": false

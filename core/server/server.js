@@ -190,6 +190,7 @@ const privateConfigSchema = Joi.object({
   stackapps_api_key: Joi.string(),
   teamcity_user: Joi.string(),
   teamcity_pass: Joi.string(),
+  thingiverse_app_token: Joi.string(),
   twitch_client_id: Joi.string(),
   twitch_client_secret: Joi.string(),
   wheelmap_token: Joi.string(),

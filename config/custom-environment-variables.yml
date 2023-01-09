@@ -101,6 +101,7 @@ private:
   stackapps_api_key: 'STACKAPPS_API_KEY'
   teamcity_user: 'TEAMCITY_USER'
   teamcity_pass: 'TEAMCITY_PASS'
+  thingiverse_app_token: 'THINGIVERSE_APP_TOKEN'
   twitch_client_id: 'TWITCH_CLIENT_ID'
   twitch_client_secret: 'TWITCH_CLIENT_SECRET'
   wheelmap_token: 'WHEELMAP_TOKEN'

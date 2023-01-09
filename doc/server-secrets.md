@@ -264,6 +264,13 @@ It is not necessary to performa full OAuth Flow to gain an access token.
 Provide a username and password to give your self-hosted Shields installation
 access to your private nexus repositories.
 
+### Thingiverse
+
+- `THINGIVERSE_APP_TOKEN` (yml: `thingiverse_app_token`)
+
+Register an application in the [Thingiverse developer console](https://www.thingiverse.com/developers/my-apps)
+in order to obtain an app token for making read-only Thingiverse API calls.
+
 ### Twitch
 
 - `TWITCH_CLIENT_ID` (yml: `twitch_client_id`)
