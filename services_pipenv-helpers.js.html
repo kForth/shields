@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: NotFound</title>
+    <title>JSDoc: Source: services/pipenv-helpers.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,187 +17,104 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: NotFound</h1>
+    <h1 class="page-title">Source: services/pipenv-helpers.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-core_base-service_errors.html">core/base-service/errors</a>~</span>NotFound<span class="signature">(props)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description"><p>Throw this to wrap a 404 or other 'not found' response from an upstream API</p></div>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-    <h2>Constructor</h2>
-    
-
-    
-    <h4 class="name" id="NotFound"><span class="type-signature"></span>new NotFound<span class="signature">(props)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>props</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="module-core_base-service_errors.html#~RuntimeErrorProps">module:core/base-service/errors~RuntimeErrorProps</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Refer to individual attrs</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_base-service_errors.js.html">core/base-service/errors.js</a>, <a href="core_base-service_errors.js.html#line53">line 53</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Common functions and utilities for tasks related to pipenv
+ *
+ * @module
+ */
+
+import Joi from 'joi'
+import { InvalidParameter } from './index.js'
+
+/**
+ * Joi schema for validating dependency.
+ *
+ * @type {Joi}
+ */
+const isDependency = Joi.object({
+  version: Joi.string(),
+  ref: Joi.string(),
+}).required()
+
+/**
+ * Joi schema for validating lock file object.
+ * Checks if the lock file object has required properties and the properties are valid.
+ *
+ * @type {Joi}
+ */
+const isLockfile = Joi.object({
+  _meta: Joi.object({
+    requires: Joi.object({
+      python_version: Joi.string(),
+    }).required(),
+  }).required(),
+  default: Joi.object().pattern(Joi.string(), isDependency),
+  develop: Joi.object().pattern(Joi.string(), isDependency),
+}).required()
+
+/**
+ * Determines the dependency version based on the dependency type.
+ *
+ * @param {object} attrs - Refer to individual attributes
+ * @param {string} attrs.kind - Wanted dependency type ('dev' or 'default'), defaults to 'default'
+ * @param {string} attrs.wantedDependency - Name of the wanted dependency
+ * @param {object} attrs.lockfileData - Object containing lock file data
+ * @throws {Error} - Error if unknown dependency type provided
+ * @throws {InvalidParameter} - Error if wanted dependency is not present in lock file data
+ * @throws {InvalidParameter} - Error if version or ref is not present for the wanted dependency
+ * @returns {object} Object containing wanted dependency version or ref
+ */
+function getDependencyVersion({
+  kind = 'default',
+  wantedDependency,
+  lockfileData,
+}) {
+  let dependenciesOfKind
+  if (kind === 'dev') {
+    dependenciesOfKind = lockfileData.develop
+  } else if (kind === 'default') {
+    dependenciesOfKind = lockfileData.default
+  } else {
+    throw Error(`Not very kind: ${kind}`)
+  }
+
+  if (!(wantedDependency in dependenciesOfKind)) {
+    throw new InvalidParameter({
+      prettyMessage: `${kind} dependency not found`,
+    })
+  }
+
+  const { version, ref } = dependenciesOfKind[wantedDependency]
+
+  if (version) {
+    // Strip the `==` which is always present.
+    return { version: version.replace('==', '') }
+  } else if (ref) {
+    if (ref.length === 40) {
+      // assume it is a commit hash
+      return { ref: ref.substring(0, 7) }
+    }
+    return { ref } // tag
+  } else {
+    throw new InvalidParameter({
+      prettyMessage: `No version or ref for ${wantedDependency}`,
+    })
+  }
+}
+
+export { isLockfile, getDependencyVersion }
+</code></pre>
+        </article>
+    </section>
 
 
 
