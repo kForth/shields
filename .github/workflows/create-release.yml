@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   create-release:
@@ -35,6 +36,8 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          version: v0.9.1
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -43,10 +46,26 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push snapshot release to DockerHub
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
           tags: shieldsio/shields:server-${{ steps.date.outputs.date }}
+          build-args: |
+            version=server-${{ steps.date.outputs.date }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push snapshot release to GHCR
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/badges/shields:server-${{ steps.date.outputs.date }}
           build-args: |
             version=server-${{ steps.date.outputs.date }}
