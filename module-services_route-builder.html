@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Tutorial: deprecating-badges</title>
+    <title>JSDoc: Class: module:services/route-builder</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,121 +17,600 @@
 
 <div id="main">
 
-    <h1 class="page-title">Tutorial: deprecating-badges</h1>
+    <h1 class="page-title">Class: module:services/route-builder</h1>
 
-    <section>
+    
+
+
+
+
+<section>
 
 <header>
     
-
-    <h2>deprecating-badges</h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>module:services/route-builder<span class="signature">(attrs)</span><span class="type-signature"></span></h2>
+        
+    
 </header>
 
 <article>
-    <h1>Deprecating Badges</h1>
-<p>When a service that Shields integrates with shuts down, those badges will no longer work and need to be deprecated within Shields.</p>
-<p>Deprecating a badge involves two steps:</p>
-<ol>
-<li>Updating the service code to use the <code>DeprecatedService</code> class</li>
-<li>Updating the service tests to reflect the new behavior of the deprecated service</li>
-</ol>
-<h2>Update Service Implementation</h2>
-<p>Locate the source file(s) for the service, which can be found in <code>*.service.js</code> files located within the directory for the service (<code>./services/:service-name/</code>) such as <code>./services/imagelayers/imagelayers.service.js</code>.</p>
-<p>Replace the existing service class implementation with the <code>DeprecatedService</code> class from <code>./core/base-service/deprecated-service.js</code> using the respective <code>category</code>, <code>route</code>, and <code>label</code> values for that service. For example:</p>
-<pre class="prettyprint source lang-js"><code>import { deprecatedService } from '../index.js'
+    <div class="container-overview">
+    
+        
 
-export default deprecatedService({
-  category: 'size',
-  route: {
-    base: 'imagelayers',
-    format: '(?:.+?)',
-  },
-  label: 'imagelayers',
-  dateAdded: new Date('2019-xx-xx'), // Be sure to update this with today's date!
-})
-</code></pre>
-<h2>Update Service Tests</h2>
-<p>Locate the test file(s) for the service, which can be found in <code>*.tester.js</code> files located in the service directory (<code>./services/:service-name/</code>), such as <code>./services/imagelayers/imagelayers.tester.js</code>.</p>
-<p>With <code>DeprecatedService</code> classes we cannot use <code>createServiceTester()</code> so you will need to create the <code>ServiceTester</code> class directly. For example:</p>
-<pre class="prettyprint source lang-js"><code>import { ServiceTester } from '../tester.js'
+    
 
-export const t = new ServiceTester({
-  id: 'imagelayers',
-  title: 'ImageLayers',
-})
-</code></pre>
-<p>Next you will need to replace/refactor the existing tests to validate the new deprecated badge behavior for this service. Deprecated badges always return a message of <code>no longer available</code> (such as <code>imagelayers | no longer available</code>) so the tests need to be updated to reflect that message value. For example:</p>
-<pre class="prettyprint source lang-js"><code>t.create('no longer available (previously image size)')
-  .get('/image-size/_/ubuntu/latest.json')
-  .expectBadge({
-    label: 'imagelayers',
-    message: 'no longer available',
-  })
-</code></pre>
-<p>Make sure to have a live (non-mocked) test for each badge the service provides that validates the each badge returns the <code>no longer available</code> message.</p>
-<p>Here is an example of what the final result would look like for a test file:</p>
-<pre class="prettyprint source lang-js"><code>import { ServiceTester } from '../tester.js'
+    
+    <h4 class="name" id="module:services/route-builder"><span class="type-signature"></span>new module:services/route-builder<span class="signature">(attrs)</span><span class="type-signature"></span></h4>
+    
 
-export const t = new ServiceTester({
-  id: 'imagelayers',
-  title: 'ImageLayers',
-})
+    
 
-t.create('no longer available (previously image size)')
-  .get('/image-size/_/ubuntu/latest.json')
-  .expectBadge({
-    label: 'imagelayers',
-    message: 'no longer available',
-  })
 
-t.create('no longer available (previously number of layers)')
-  .get('/layers/_/ubuntu/latest.json')
-  .expectBadge({
-    label: 'imagelayers',
-    message: 'no longer available',
-  })
-</code></pre>
-<h2>What Happens Next?</h2>
-<p>Once a service is deprecated, we'll keep the deprecation notice for a minimum of one year. During that time, the badge will render as follows:
-<img src="https://img.shields.io/badge/gratipay-no%20longer%20available-inactive" alt=""></p>
-<p>Past that point, all related code will be deleted, and a not found error will be rendered instead:
-<img src="https://img.shields.io/badge/404-badge%20not%20found-critical" alt=""></p>
-<p>Here is a listing of all deleted badges that were once part of the Shields.io service:</p>
-<ul>
-<li>bitHound</li>
-<li>Cauditor</li>
-<li>CocoaPods Apps</li>
-<li>CocoaPods Downloads</li>
-<li>Codetally</li>
-<li>continuousphp</li>
-<li>Coverity</li>
-<li>Dockbit</li>
-<li>Dotnet Status</li>
-<li>Gemnasium</li>
-<li>Gratipay/Gittip</li>
-<li>ImageLayers</li>
-<li>Issue Stats</li>
-<li>JitPack Downloads</li>
-<li>Leanpub</li>
-<li>Libscore</li>
-<li>Magnum CI</li>
-<li>NSP</li>
-<li>PHP Eye</li>
-<li>Snap CI</li>
-<li>VersionEye</li>
-<li>Waffle</li>
-</ul>
-<h2>Additional Information</h2>
-<p>Some other information that may be useful:</p>
-<ul>
-<li><a href="../CONTRIBUTING.md">Contributing Docs</a></li>
-<li><a href="./TUTORIAL.md">Badge Tutorial</a></li>
-<li><a href="./service-tests.md">Service Tests Tutorial</a></li>
-<li>Previous Pull Requests that deprecated badges like <a href="https://github.com/badges/shields/pull/2352">#2352</a> and <a href="https://github.com/badges/shields/pull/2410">#2410</a></li>
-</ul>
+
+<div class="description">
+    <p>Creates a RouteBuilder object.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>attrs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Refer to individual attributes</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>base</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Base URL, defaults to ''</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_route-builder.js.html">services/route-builder.js</a>, <a href="services_route-builder.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="format"><span class="type-signature"></span>format<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Get the format components separated by '/'</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_route-builder.js.html">services/route-builder.js</a>, <a href="services_route-builder.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="push"><span class="type-signature"></span>push<span class="signature">(format, capture)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Saves the format and capture values in the RouteBuilder instance.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>format</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Pattern based on path-to-regex, for example: (?:(.+)\.)?${serviceBaseUrl}</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>capture</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to capture</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_route-builder.js.html">services/route-builder.js</a>, <a href="services_route-builder.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>RouteBuilder instance for chaining</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="toObject"><span class="type-signature"></span>toObject<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Returns a new object based on RouteBuilder instance containing its base, format and capture properties.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="services_route-builder.js.html">services/route-builder.js</a>, <a href="services_route-builder.js.html#line59">line 59</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Object containing base, format and capture properties of the RouteBuilder instance</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
 </article>
 
 </section>
+
+
+
 
 </div>
 
